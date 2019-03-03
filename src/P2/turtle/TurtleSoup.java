@@ -4,7 +4,10 @@
 package P2.turtle;
 
 import java.util.List;
-import java.util.Set; 
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -140,6 +143,21 @@ public class TurtleSoup {
 	}
 
 	/**
+	 * 
+	 * @param p 点1
+	 * @param q 点2
+	 * @param r 点3
+	 * @return 
+	 */
+	public static boolean orientation(Point p, Point q, Point r) {
+		double val = ((q.y() - p.y()) * (r.x() - q.x()) - (q.x() - p.x()) * (r.y() - q.y()));
+
+		if (val == 0)
+			return false; // 共线
+		return (val > 0) ? false : true; // 顺时针/逆时针
+	}
+
+	/**
 	 * Given a set of points, compute the convex hull, the smallest convex set that
 	 * contains all the points in a set of input points. The gift-wrapping algorithm
 	 * is one simple approach to this problem, and there are other algorithms too.
@@ -150,46 +168,44 @@ public class TurtleSoup {
 	 *         parameter of the convex hull
 	 */
 	public static Set<Point> convexHull(Set<Point> points) {
-		Set<Point> e = new HashSet<Point>();
-		e.clear();
-		if (points.size() < 1)
-			return e;
-//    	find leftmost point
-		List<Point> list = new ArrayList<Point>(points);
-		List<Point> P = new ArrayList<Point>(100);
-		Point endPoint = null;
-		
-		double leftmost = 100.0;
-		Point pointOnHull = null;
-		Iterator<Point> it1 = points.iterator();
-		while (it1.hasNext()) {
+		if (points.size() < 3)
+			return points;
+		else {
+
+			// find leftmost point
+			List<Point> S = new ArrayList<Point>(points);
+			List<Point> P = new ArrayList<Point>(100);
+			Point endPoint = null;
+			double leftmost = 100.0;
+			Point pointOnHull = null;
+			// System.out.println(points);
+			Iterator<Point> it1 = points.iterator();
+			while (it1.hasNext()) {
 				Point minPoint = it1.next();
-			if (minPoint.x() < leftmost) {
-				leftmost = minPoint.x();
-				pointOnHull = minPoint;
-			}
-		}
-		System.out.println(pointOnHull);
-		int i = 0;
-		do {
-			P.add(i,pointOnHull);
-			endPoint = list.get(0);
-			for (int j = 1; j < list.size(); j++) {
-				if (endPoint.equals(pointOnHull)
-						|| (((endPoint.x() - P.get(i).x()) * ((P.get(i).y() - list.get(j).y())))
-								- ((endPoint.y() - P.get(i).y()) * (P.get(i).x() - list.get(j).x()))) < 0) { // p[i]x*endPointX-p[i]y*endPointX
-					endPoint = (Point) list.get(j);
+				if (minPoint.x() < leftmost) {
+					leftmost = minPoint.x();
+					pointOnHull = minPoint;
 				}
 			}
-			i = i + 1;
-			pointOnHull = endPoint;
+			int i = 0;
+			do {
+				// System.out.println(i);
+				P.add(i, pointOnHull);
+				endPoint = S.get(0);
+				for (int j = 1; j < S.size(); j++) {
+					if ((endPoint.x() == (pointOnHull.y()) && ((endPoint.y() == pointOnHull.y())))
+							|| !(orientation(P.get(i), endPoint, S.get(j)))) {
+						endPoint = S.get(j);
+					}
+				}
+				i = i + 1;
+				pointOnHull = endPoint;
 
-		} while (endPoint.equals(P.get(0)));
+			} while (!(endPoint.x() == P.get(0).x()) || !(endPoint.y() == P.get(0).y()));
 
-		Set<Point> subSet = new HashSet<Point>(P);
-
-		return subSet;
-
+			Set<Point> subSet = new HashSet<Point>(P);
+			return subSet;
+		}
 	}
 
 	/**
@@ -224,13 +240,27 @@ public class TurtleSoup {
 	 * @param args unused
 	 */
 	public static void main(String args[]) {
-		DrawableTurtle turtle = new DrawableTurtle();
+//		DrawableTurtle turtle = new DrawableTurtle();
+//
+//		// drawSquare(turtle, 40);
+//
+//		// draw the window
+//		drawPersonalArt(turtle);
+//		turtle.draw();
 
-		// drawSquare(turtle, 40);
+		Point p11 = new Point(1, 1);
+		Point p1010 = new Point(10, 10);
+		Point p110 = new Point(1, 10);
+		Point p12 = new Point(1, 2);
+		Point p23 = new Point(2, 3);
+		Point p32 = new Point(3, 2);
 
-		// draw the window
-		drawPersonalArt(turtle);
-		turtle.draw();
+		Set<Point> points = new HashSet<Point>();
+		points.add(p11);
+		points.add(p1010);
+		points.add(p110);
+		// System.out.println(points);
+		TurtleSoup.convexHull(points);
 
 	}
 
