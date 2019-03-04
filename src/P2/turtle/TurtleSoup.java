@@ -168,13 +168,15 @@ public class TurtleSoup {
 	 *         parameter of the convex hull
 	 */
 	public static Set<Point> convexHull(Set<Point> points) {
-		if (points.size() < 3)
+		if (points.size() < 3) {
+			System.out.println(points);
 			return points;
+		}
 		else {
 
 			// find leftmost point
 			List<Point> S = new ArrayList<Point>(points);
-			List<Point> P = new ArrayList<Point>(100);
+			List<Point> P = new ArrayList<Point>(10);
 			Point endPoint = null;
 			double leftmost = 100.0;
 			Point pointOnHull = null;
@@ -193,8 +195,8 @@ public class TurtleSoup {
 				P.add(i, pointOnHull);
 				endPoint = S.get(0);
 				for (int j = 1; j < S.size(); j++) {
-					if ((endPoint.x() == (pointOnHull.y()) && ((endPoint.y() == pointOnHull.y())))
-							|| !(orientation(P.get(i), endPoint, S.get(j)))) {
+					if ((endPoint.x() == (pointOnHull.x()) && ((endPoint.y() == pointOnHull.y())))
+							|| (orientation(P.get(i), endPoint, S.get(j)))) {
 						endPoint = S.get(j);
 					}
 				}
@@ -204,7 +206,9 @@ public class TurtleSoup {
 			} while (!(endPoint.x() == P.get(0).x()) || !(endPoint.y() == P.get(0).y()));
 
 			Set<Point> subSet = new HashSet<Point>(P);
+			System.out.println(subSet);
 			return subSet;
+			
 		}
 	}
 
@@ -257,9 +261,12 @@ public class TurtleSoup {
 
 		Set<Point> points = new HashSet<Point>();
 		points.add(p11);
+		TurtleSoup.convexHull(points);
 		points.add(p1010);
+		TurtleSoup.convexHull(points);
 		points.add(p110);
-		// System.out.println(points);
+		TurtleSoup.convexHull(points);
+		points.add(p12);
 		TurtleSoup.convexHull(points);
 
 	}
